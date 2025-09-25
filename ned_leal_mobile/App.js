@@ -44,8 +44,8 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'Nunito': require('../assets/fonts/Nunito-Regular.ttf'),
-    'Alto Sans': require('../assets/fonts/Aalto Sans Pro Bold.otf'),
+    'Nunito': require('./assets/fonts/Nunito-Regular.ttf'),
+    'Alto Sans': require('./assets/fonts/Aalto Sans Pro Bold.otf'),
   });
 
   const onLayoutRootView = useCallback(async () => {
