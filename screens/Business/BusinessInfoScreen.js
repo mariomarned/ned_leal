@@ -1,1 +1,0 @@
-import { GlobalStyles, Colors, FontSizes, Fonts } from '../../constants/Styles';

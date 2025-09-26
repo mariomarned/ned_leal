@@ -1,9 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { GlobalStyles } from '../../constants/Styles';
-import { Colors } from '../../constants/Colors';
-import { FontSizes } from '../../constants/FontSizes';
-import { Fonts } from '../../constants/Fonts';
+import { GlobalStyles, Colors, FontSizes, Fonts } from '../../constants/Styles'; // Corregido
 import CustomButton from '../../components/CustomButton';
 
 const YourDynamicsScreen = ({ navigation }) => {

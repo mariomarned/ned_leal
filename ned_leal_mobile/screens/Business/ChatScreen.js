@@ -1,9 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
-import { GlobalStyles } from '../../constants/Styles';
-import { Colors } from '../../constants/Colors';
-import { FontSizes } from '../../constants/FontSizes';
-import { Fonts } from '../../constants/Fonts';
+import { GlobalStyles, Colors, FontSizes, Fonts } from '../../constants/Styles'; // Corregido
 
 const ChatScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([

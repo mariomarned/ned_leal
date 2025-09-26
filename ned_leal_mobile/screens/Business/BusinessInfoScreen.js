@@ -1,65 +1,54 @@
-import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { GlobalStyles } from '../../constants/Styles';
-import { Colors } from '../../constants/Colors';
-import { FontSizes } from '../../constants/FontSizes';
-import { Fonts } from '../../constants/Fonts';
+import { GlobalStyles, Colors, FontSizes, Fonts } from '../../constants/Styles';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
 
 const BusinessInfoScreen = ({ navigation }) => {
   return (
     <ScrollView style={GlobalStyles.screenContainer}>
-      <View style={GlobalStyles.headerContainer}>
-        <Text style={GlobalStyles.screenTitle}>Información de tu Negocio</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Información del Negocio</Text>
       </View>
 
-      <View style={styles.contentContainer}>
+      <View style={styles.formContainer}>
         <CustomTextInput
-          label="Nombre del Negocio"
-          placeholder="Mi Negocio S.A.S."
-          value="Mi Negocio S.A.S."
+          placeholder="Nombre del Negocio"
+          value="Mi Negocio"
           onChangeText={() => {}}
+          style={styles.input}
         />
         <CustomTextInput
-          label="Tipo de Negocio"
-          placeholder="Restaurante, Tienda de Ropa, etc."
-          value="Restaurante"
+          placeholder="Dirección"
+          value="Calle Falsa 123"
           onChangeText={() => {}}
+          style={styles.input}
         />
         <CustomTextInput
-          label="Dirección"
-          placeholder="Calle 123 #45-67"
-          value="Calle 123 #45-67"
+          placeholder="Teléfono"
+          value="123-456-7890"
           onChangeText={() => {}}
+          style={styles.input}
         />
         <CustomTextInput
-          label="Teléfono"
-          placeholder="+57 300 123 4567"
-          value="+57 300 123 4567"
+          placeholder="Correo Electrónico"
+          value="minegocio@example.com"
           onChangeText={() => {}}
-          keyboardType="phone-pad"
+          style={styles.input}
         />
         <CustomTextInput
-          label="Correo Electrónico"
-          placeholder="negocio@ejemplo.com"
-          value="negocio@ejemplo.com"
-          onChangeText={() => {}}
-          keyboardType="email-address"
-        />
-        <CustomTextInput
-          label="Descripción del Negocio"
-          placeholder="Breve descripción de tu negocio"
-          value="Ofrecemos la mejor comida italiana de la ciudad."
+          placeholder="Descripción"
+          value="Este es un negocio increíble."
           onChangeText={() => {}}
           multiline
           numberOfLines={4}
+          style={[styles.input, styles.textArea]}
         />
 
         <CustomButton
           title="Guardar Cambios"
-          onPress={() => console.log('Guardar Cambios')}
+          onPress={() => {}}
           style={styles.saveButton}
+          textStyle={styles.saveButtonText}
         />
       </View>
     </ScrollView>
@@ -67,11 +56,42 @@ const BusinessInfoScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  headerContainer: {
     padding: 20,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: FontSizes.large,
+    fontFamily: Fonts.bold,
+    color: Colors.primary,
+  },
+  formContainer: {
+    paddingHorizontal: 20,
+  },
+  input: {
+    marginBottom: 15,
+    borderColor: Colors.lightGray,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    fontSize: FontSizes.medium,
+    fontFamily: Fonts.regular,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
   },
   saveButton: {
+    backgroundColor: Colors.accent,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
     marginTop: 20,
+  },
+  saveButtonText: {
+    color: Colors.white,
+    fontSize: FontSizes.medium,
+    fontFamily: Fonts.bold,
   },
 });
 
