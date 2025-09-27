@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
-import { GlobalStyles, Colors, FontSizes, Spacing } from '../../constants/Styles';
+import { GlobalStyles, Colors, FontSizes, Spacing, Fonts } from '../../constants/Styles';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ const LoginScreen = ({ navigation }) => {
     console.log('Email:', email);
     console.log('Password:', password);
     // Implement login logic here
+    navigation.navigate('BusinessHome'); // Corregido: ahora navega a BusinessHome
   };
 
   return (

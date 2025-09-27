@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomButton from '../../components/CustomButton';
-import { GlobalStyles, Colors, FontSizes } from '../../constants/Styles';
+import { GlobalStyles, Colors, FontSizes, Spacing } from '../../constants/Styles'; // Corregido: se añadió Spacing
 
 const RegisterScreen1 = ({ navigation }) => {
   return (
@@ -11,7 +11,7 @@ const RegisterScreen1 = ({ navigation }) => {
       {/* Placeholder for future content */}
       <CustomButton
         title="Continuar"
-        onPress={() => console.log('Continuar')}
+        onPress={() => navigation.navigate('Register3')} // Corregido: ahora navega a Register3
         style={styles.button}
       />
     </View>
@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.white,
-    padding: GlobalStyles.Spacing.medium,
+    padding: Spacing.medium, // Corregido
   },
   button: {
-    marginTop: GlobalStyles.Spacing.large,
+    marginTop: Spacing.large, // Corregido
     width: '80%',
   },
 });

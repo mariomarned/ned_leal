@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import CustomTextInput from '../../components/CustomTextInput';
 import CustomButton from '../../components/CustomButton';
-import { GlobalStyles, Colors, FontSizes, Spacing } from '../../constants/Styles';
+import { GlobalStyles, Colors, FontSizes, Spacing, Fonts } from '../../constants/Styles';
 
 const RegisterScreen4 = ({ navigation }) => {
   const [businessName, setBusinessName] = useState('');
