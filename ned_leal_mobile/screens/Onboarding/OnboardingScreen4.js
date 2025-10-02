@@ -1,37 +1,71 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { GlobalStyles } from '../../constants/Styles';
 
 const { width, height } = Dimensions.get('window');
 
 const OnboardingScreen4 = () => {
     const navigation = useNavigation();
+    const bounceAnim = useRef(new Animated.Value(0)).current; // Initial value for animation
+
+    useEffect(() => {
+        Animated.spring(
+            bounceAnim,
+            {
+                toValue: 1,
+                friction: 3,
+                tension: 40,
+                useNativeDriver: true,
+            }
+        ).start();
+    }, [bounceAnim]);
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                {/* Top left yellow shape */}
-                <View style={styles.topLeftYellowShape} />
+                {/* Top yellow background shape */}
+                <View style={styles.topYellowShape} />
 
                 <View style={styles.contentContainer}>
-                    <Text style={styles.title}>Pasa la voz!</Text>
-                    <Text style={styles.description}>
-                        Todos los negocios pueden comenzar gratis!
+                    <Text style={GlobalStyles.title}>Gana con cada dinámica y sin complique!</Text>
+                    <Text style={[GlobalStyles.h3, { textAlign: 'center' }]}>
+                        Nunca fue tan fácil ganar recompensas de los negocios, no mas formularios y procesos complicados.
                     </Text>
-
-                    <Image source={require('../../assets/images/pasa_la_voz.png')} style={styles.mainImage} />
-
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen5')}>
-                        <Text style={styles.buttonText}>SIGUIENTE</Text>
-                    </TouchableOpacity>
+                    <Animated.Image 
+                        source={require('../../assets/images/Auth/welcome1_image.png')} 
+                        style={[
+                            styles.welcomeImage,
+                            { 
+                                transform: [
+                                    {
+                                        scale: bounceAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [0.5, 1] // Start smaller and bounce to normal size
+                                        })
+                                    },
+                                    {
+                                        translateY: bounceAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [height * 0.2, 0] // Start 20% down and bounce up
+                                        })
+                                    }
+                                ]
+                            }
+                        ]}
+                    />
                 </View>
 
                 {/* Bottom left pink shape */}
                 <View style={styles.bottomLeftPinkShape} />
-                {/* Bottom left arrow */}
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Image source={require('../../assets/images/arrow_back.png')} style={styles.backArrow} />
-                </TouchableOpacity>
+
+                {/* Button positioned at bottom right */}
+                <View style={styles.buttonContainer}>
+                    <Text style={[GlobalStyles.h3, { textAlign: 'center', marginBottom: 20 }]}>Y serán mas...</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen5')}>
+                        <Text style={styles.buttonText}>SIGUIENTE</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -41,13 +75,14 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingTop: height * 0.05, // Adjust based on status bar height
     },
     container: {
         flex: 1,
         backgroundColor: '#fff',
         position: 'relative',
     },
-    topLeftYellowShape: {
+    topYellowShape: {
         position: 'absolute',
         top: 0,
         left: 0,
@@ -68,32 +103,31 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: height * 0.1, // Adjust based on top shape
+        paddingTop: 10, // Adjust based on top shape
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
+    featuresContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    featureRow: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: '100%',
         marginBottom: 10,
-        color: '#333',
+        alignItems: 'flex-end'
     },
-    description: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 30,
-        color: '#666',
-    },
-    mainImage: {
-        width: width * 0.8,
+    welcomeImage: {
+        width: '100%',
         height: height * 0.4,
         resizeMode: 'contain',
-        marginBottom: 30,
+        marginTop: height * 0.05,
     },
     button: {
-        backgroundColor: '#FF69B4', // Pink color
+        backgroundColor: '#C4227D', // Pink color
         paddingVertical: 15,
         paddingHorizontal: 40,
         borderRadius: 30,
@@ -108,16 +142,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    backButton: {
+    buttonContainer: {
         position: 'absolute',
-        bottom: 20,
-        left: 20,
-        padding: 10,
-    },
-    backArrow: {
-        width: 30,
-        height: 30,
-        resizeMode: 'contain',
+        bottom: 30,
+        right: 30,
     },
 });
 

@@ -1,75 +1,71 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, SafeAreaView, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { GlobalStyles } from '../../constants/Styles';
 
 const { width, height } = Dimensions.get('window');
 
 const OnboardingScreen2 = () => {
     const navigation = useNavigation();
+    const bounceAnim = useRef(new Animated.Value(0)).current; // Initial value for animation
+
+    useEffect(() => {
+        Animated.spring(
+            bounceAnim,
+            {
+                toValue: 1,
+                friction: 3,
+                tension: 40,
+                useNativeDriver: true,
+            }
+        ).start();
+    }, [bounceAnim]);
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                {/* Top right yellow shape */}
-                <View style={styles.topRightYellowShape} />
+                {/* Top yellow background shape */}
+                <View style={styles.topYellowShape} />
 
                 <View style={styles.contentContainer}>
-                    <Text style={styles.title}>Tus negocios preferidos!</Text>
-                    <Text style={styles.description}>
-                        Negocios pequeños y grandes, todos pueden estar en NED y comenzar gratis.
+                    <Text style={GlobalStyles.title}>Gana con cada dinámica y sin complique!</Text>
+                    <Text style={[GlobalStyles.h3, { textAlign: 'center' }]}>
+                        Nunca fue tan fácil ganar recompensas de los negocios, no mas formularios y procesos complicados.
                     </Text>
-
-                    <View style={styles.categoriesContainer}>
-                        <View style={styles.categoryRow}>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/restaurante.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>RESTAURANTE</Text>
-                            </View>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/farmacia.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>FARMACIA</Text>
-                            </View>
-                        </View>
-                        <View style={styles.categoryRow}>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/abogados.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>ABOGADOS</Text>
-                            </View>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/ned_logo_small.png')} style={styles.categoryImage} />
-                            </View>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/sastreria.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>SASTRERÍA</Text>
-                            </View>
-                        </View>
-                        <View style={styles.categoryRow}>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/puesto_perros.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>PUESTO PERROS</Text>
-                            </View>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/gasolinera.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>GASOLINERA</Text>
-                            </View>
-                            <View style={styles.categoryItem}>
-                                <Image source={require('../../assets/images/tiendita.png')} style={styles.categoryImage} />
-                                <Text style={styles.categoryText}>TIENDITA</Text>
-                            </View>
-                        </View>
-                    </View>
-
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen3')}>
-                        <Text style={styles.buttonText}>SIGUIENTE</Text>
-                    </TouchableOpacity>
+                    <Animated.Image 
+                        source={require('../../assets/images/Auth/welcome1_image.png')} 
+                        style={[
+                            styles.welcomeImage,
+                            { 
+                                transform: [
+                                    {
+                                        scale: bounceAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [0.5, 1] // Start smaller and bounce to normal size
+                                        })
+                                    },
+                                    {
+                                        translateY: bounceAnim.interpolate({
+                                            inputRange: [0, 1],
+                                            outputRange: [height * 0.2, 0] // Start 20% down and bounce up
+                                        })
+                                    }
+                                ]
+                            }
+                        ]}
+                    />
                 </View>
 
                 {/* Bottom left pink shape */}
                 <View style={styles.bottomLeftPinkShape} />
-                {/* Bottom left arrow */}
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Image source={require('../../assets/images/arrow_back.png')} style={styles.backArrow} />
-                </TouchableOpacity>
+
+                {/* Button positioned at bottom right */}
+                <View style={styles.buttonContainer}>
+                    <Text style={[GlobalStyles.h3, { textAlign: 'center', marginBottom: 20 }]}>Y serán mas...</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen3')}>
+                        <Text style={styles.buttonText}>SIGUIENTE</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -79,20 +75,21 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
         backgroundColor: '#fff',
+        paddingTop: height * 0.05, // Adjust based on status bar height
     },
     container: {
         flex: 1,
         backgroundColor: '#fff',
         position: 'relative',
     },
-    topRightYellowShape: {
+    topYellowShape: {
         position: 'absolute',
         top: 0,
-        right: 0,
+        left: 0,
         width: width * 0.8,
         height: height * 0.3,
         backgroundColor: '#FFD700', // Yellow color
-        borderBottomLeftRadius: width * 0.4,
+        borderBottomRightRadius: width * 0.4,
     },
     bottomLeftPinkShape: {
         position: 'absolute',
@@ -106,51 +103,31 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: height * 0.1, // Adjust based on top shape
+        paddingTop: 10, // Adjust based on top shape
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginBottom: 10,
-        color: '#333',
-    },
-    description: {
-        fontSize: 16,
-        textAlign: 'center',
-        marginBottom: 30,
-        color: '#666',
-    },
-    categoriesContainer: {
+    featuresContainer: {
         width: '100%',
         alignItems: 'center',
         marginBottom: 20,
     },
-    categoryRow: {
+    featureRow: {
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         width: '100%',
         marginBottom: 10,
+        alignItems: 'flex-end'
     },
-    categoryItem: {
-        alignItems: 'center',
-    },
-    categoryImage: {
-        width: width * 0.2,
-        height: width * 0.2,
+    welcomeImage: {
+        width: '100%',
+        height: height * 0.4,
         resizeMode: 'contain',
-        marginBottom: 5,
-    },
-    categoryText: {
-        fontSize: 12,
-        textAlign: 'center',
-        color: '#333',
+        marginTop: height * 0.05,
     },
     button: {
-        backgroundColor: '#FF69B4', // Pink color
+        backgroundColor: '#C4227D', // Pink color
         paddingVertical: 15,
         paddingHorizontal: 40,
         borderRadius: 30,
@@ -165,16 +142,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
-    backButton: {
+    buttonContainer: {
         position: 'absolute',
-        bottom: 20,
-        left: 20,
-        padding: 10,
-    },
-    backArrow: {
-        width: 30,
-        height: 30,
-        resizeMode: 'contain',
+        bottom: 30,
+        right: 30,
     },
 });
 
