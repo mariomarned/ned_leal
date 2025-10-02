@@ -2,23 +2,19 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Ionicons } from '@expo/vector-icons'; // Importar Ionicons
 import { TouchableOpacity } from 'react-native'; // Importar TouchableOpacity
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OnboardingNavigator from './screens/Onboarding/OnboardingNavigator';
 
 import RegisterScreen1 from './screens/Auth/RegisterScreen1';
-import RegisterScreen2 from './screens/Auth/RegisterScreen2';
 import LoginScreen from './screens/Auth/LoginScreen';
 import ForgotPasswordScreen from './screens/Auth/ForgotPasswordScreen';
 import RegisterScreen3 from './screens/Auth/RegisterScreen3';
 import RegisterScreen4 from './screens/Auth/RegisterScreen4';
-import WelcomeScreen1 from './screens/Auth/WelcomeScreen1';
-import WelcomeScreen2 from './screens/Auth/WelcomeScreen2';
-import WelcomeScreen3 from './screens/Auth/WelcomeScreen3';
-import WelcomeScreen4 from './screens/Auth/WelcomeScreen4';
-import WelcomeScreen5 from './screens/Auth/WelcomeScreen5';
 import BusinessHomeScreen from './screens/Business/BusinessHomeScreen';
 import CreateDynamicScreen from './screens/Business/CreateDynamicScreen';
 import OwnerInfoScreen from './screens/Business/OwnerInfoScreen';
@@ -56,76 +52,462 @@ export default function App() {
     'Alto Sans': require('./assets/fonts/Aalto Sans Pro Bold.otf'),
   });
 
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+
+  useEffect(() => {
+    async function checkFirstLaunch() {
+      try {
+        const value = await AsyncStorage.getItem('alreadyLaunched');
+        if (value === null) {
+          await AsyncStorage.setItem('alreadyLaunched', 'true');
+          setIsFirstLaunch(true);
+        } else {
+          setIsFirstLaunch(false);
+        }
+      } catch (e) {
+        console.error('Error reading AsyncStorage:', e);
+        setIsFirstLaunch(false); // Assume not first launch on error
+      }
+    }
+    checkFirstLaunch();
+  }, []);
+
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded && isFirstLaunch !== null) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isFirstLaunch]);
 
-  if (!fontsLoaded) {
+  const clearAsyncStorage = async () => {
+    try {
+      await AsyncStorage.clear();
+      console.log('AsyncStorage cleared successfully.');
+      setIsFirstLaunch(true); // Simulate first launch after clearing
+    } catch (e) {
+      console.error('Error clearing AsyncStorage:', e);
+    }
+  };
+
+  if (!fontsLoaded || isFirstLaunch === null) {
     return null;
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome1">
-        <Stack.Screen name="Welcome1" component={WelcomeScreen1} options={{ headerShown: false }} />
-        <Stack.Screen name="Welcome2" component={WelcomeScreen2} options={{ headerShown: false }} />
-        <Stack.Screen name="Welcome3" component={WelcomeScreen3} options={{ headerShown: false }} />
-        <Stack.Screen name="Welcome4" component={WelcomeScreen4} options={{ headerShown: false }} />
-        <Stack.Screen name="Welcome5" component={WelcomeScreen5} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={({ navigation }) => ({
-          headerShown: true,
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-              <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })} />
-        <Stack.Screen name="Register1" component={RegisterScreen1} options={({ navigation }) => ({
-          headerShown: true,
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-              <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })} />
-        <Stack.Screen name="Register2" component={RegisterScreen2} options={({ navigation }) => ({
-          headerShown: true,
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-              <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })} />
-        <Stack.Screen name="Register3" component={RegisterScreen3} options={({ navigation }) => ({
-          headerShown: true,
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-              <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })} />
-        <Stack.Screen name="Register4" component={RegisterScreen4} options={({ navigation }) => ({
-          headerShown: true,
-          title: '',
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-              <Ionicons name="arrow-back" size={24} color="black" />
-            </TouchableOpacity>
-          ),
-        })} />
-        <Stack.Screen name="BusinessHome" component={BusinessHomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="BusinessInfo" component={BusinessInfoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="FollowersAndRewards" component={FollowersAndRewardsScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ProductList" component={ProductListScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="YourDynamics" component={YourDynamicsScreen} options={{ headerShown: false }} />
-      </Stack.Navigator>
+    <NavigationContainer onReady={onLayoutRootView}>
+      {isFirstLaunch ? (
+        <OnboardingNavigator />
+      ) : (
+        <Stack.Navigator initialRouteName="Register1">
+          <Stack.Screen
+            name="Register1"
+            component={RegisterScreen1}
+            options={({ navigation }) => ({
+              headerShown: true, // Mostrar el encabezado
+              title: 'Registro', // Título de la pantalla
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Iniciar Sesión',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Recuperar Contraseña',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Register3"
+            component={RegisterScreen3}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Registro (3/4)',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Register4"
+            component={RegisterScreen4}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Registro (4/4)',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="BusinessHome"
+            component={BusinessHomeScreen}
+            options={{ headerShown: false }} // Esta pantalla no tendrá botón de retroceso
+          />
+          <Stack.Screen
+            name="CreateDynamic"
+            component={CreateDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Crear Dinámica',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="OwnerInfo"
+            component={OwnerInfoScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Información del Propietario',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="YourDynamics"
+            component={YourDynamicsScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Tus Dinámicas',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="BusinessInfo"
+            component={BusinessInfoScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Información del Negocio',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ProductList"
+            component={ProductListScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Lista de Productos',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Chat',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="FollowersAndRewards"
+            component={FollowersAndRewardsScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Seguidores y Recompensas',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="FollowerInfo"
+            component={FollowerInfoScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Información del Seguidor',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ContactUs"
+            component={ContactUsScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Contáctanos',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="AboutNED"
+            component={AboutNEDScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Acerca de NED',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="NewConsumerDynamic"
+            component={NewConsumerDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Nueva Dinámica de Consumidor',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="TwoForOneDynamic"
+            component={TwoForOneDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Dinámica 2x1',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateTwoForOneDynamic"
+            component={CreateTwoForOneDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Crear Dinámica 2x1',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="AdDynamic"
+            component={AdDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Dinámica de Anuncio',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateAdDynamic"
+            component={CreateAdDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Crear Dinámica de Anuncio',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="Discount"
+            component={DiscountScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Descuento',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="CreateDiscountDynamic"
+            component={CreateDiscountDynamicScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Crear Dinámica de Descuento',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerHome"
+            component={ConsumerHomeScreen}
+            options={{ headerShown: false }} // Esta pantalla no tendrá botón de retroceso
+          />
+          <Stack.Screen
+            name="ConsumerHome1"
+            component={ConsumerHomeScreen1}
+            options={{ headerShown: false }} // Esta pantalla no tendrá botón de retroceso
+          />
+          <Stack.Screen
+            name="ConsumerAccount"
+            component={ConsumerAccountScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Cuenta de Consumidor',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerSearch"
+            component={ConsumerSearchScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Buscar Negocios',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerBusinessSearch"
+            component={ConsumerBusinessSearchScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Buscar Negocios',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerYourBusinesses"
+            component={ConsumerYourBusinessesScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Tus Negocios',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerChat"
+            component={ConsumerChatScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Chat de Consumidor',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerAboutNed"
+            component={ConsumerAboutNedScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Acerca de NED',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerYourRewards"
+            component={ConsumerYourRewardsScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Tus Recompensas',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+          <Stack.Screen
+            name="ConsumerBusinessDetail"
+            component={ConsumerBusinessDetailScreen}
+            options={({ navigation }) => ({
+              headerShown: true,
+              title: 'Detalle del Negocio',
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+              ),
+            })}
+          />
+        </Stack.Navigator>
+      )}
+      <TouchableOpacity onPress={clearAsyncStorage} style={{ position: 'absolute', bottom: 50, alignSelf: 'center', backgroundColor: 'red', padding: 10, borderRadius: 5 }}>
+        <Text style={{ color: 'white' }}>Clear AsyncStorage</Text>
+      </TouchableOpacity>
     </NavigationContainer>
   );
 }

@@ -1,40 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Switch, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Switch, Image, Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import * as ImagePicker from 'expo-image-picker';
+// import * as ImagePicker from 'expo-image-picker';
 
 const CreateTwoForOneDynamicScreen = ({ navigation }) => {
   const [title, setTitle] = useState('');
   const [detail, setDetail] = useState('');
   const [validityDate, setValidityDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [tempDate, setTempDate] = useState('');
   const [termsAndConditions, setTermsAndConditions] = useState(false);
   const [selectedReferences, setSelectedReferences] = useState(false);
   const [whileSuppliesLast, setWhileSuppliesLast] = useState(false);
   const [image, setImage] = useState(null);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImage = () => {
+    alert('Funcionalidad de selección de imagen temporalmente deshabilitada.');
+  };
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+  const onChangeDate = (selectedDate) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setValidityDate(selectedDate);
     }
   };
 
-  const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || validityDate;
-    setShowDatePicker(false);
-    setValidityDate(currentDate);
-  };
-
   const handleSubmit = () => {
-    // Lógica para enviar la nueva dinámica
+    // Lógica para enviar la nueva dinámica de 2x1
     console.log({
       title,
       detail,
@@ -52,7 +44,7 @@ const CreateTwoForOneDynamicScreen = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
-      <Text style={styles.title}>Crear Dinámica Dos x Uno</Text>
+      <Text style={styles.title}>Crear Dinámica 2x1</Text>
 
       <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
         {image ? (
@@ -78,18 +70,51 @@ const CreateTwoForOneDynamicScreen = ({ navigation }) => {
       />
 
       <Text style={styles.label}>Fecha de Vigencia:</Text>
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
-        <Text>{validityDate.toLocaleDateString()}</Text>
+      <TouchableOpacity onPress={() => {
+        setTempDate(validityDate.toLocaleDateString('es-ES'));
+        setShowDatePicker(true);
+      }} style={styles.datePickerButton}>
+        <Text>{validityDate.toLocaleDateString('es-ES')}</Text>
+        <Ionicons name="calendar-outline" size={20} color="#666" />
       </TouchableOpacity>
-      {showDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={validityDate}
-          mode="date"
-          display="default"
-          onChange={onChangeDate}
-        />
-      )}
+      
+      <Modal
+        visible={showDatePicker}
+        transparent={true}
+        animationType="slide"
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Seleccionar Fecha</Text>
+            <Text style={styles.modalSubtitle}>Formato: DD/MM/YYYY</Text>
+            <TextInput
+              style={styles.dateInput}
+              placeholder="DD/MM/YYYY"
+              value={tempDate}
+              onChangeText={setTempDate}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={() => {
+                  setShowDatePicker(false);
+                  setTempDate('');
+                }}
+              >
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.modalButton, styles.confirmButton]} 
+                onPress={onChangeDate}
+              >
+                <Text style={styles.confirmButtonText}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>Aplican términos y condiciones</Text>
@@ -98,13 +123,15 @@ const CreateTwoForOneDynamicScreen = ({ navigation }) => {
           value={termsAndConditions}
         />
       </View>
+
       <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>Válido para referencias seleccionadas</Text>
+        <Text style={styles.switchLabel}>Referencias seleccionadas</Text>
         <Switch
           onValueChange={setSelectedReferences}
           value={selectedReferences}
         />
       </View>
+
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>Hasta agotar existencias</Text>
         <Switch
@@ -114,7 +141,7 @@ const CreateTwoForOneDynamicScreen = ({ navigation }) => {
       </View>
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Enviar</Text>
+        <Text style={styles.submitButtonText}>Crear 2x1</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -179,7 +206,9 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 15,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
     height: 45,
   },
   switchContainer: {
@@ -205,6 +234,65 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 15,
+  },
+  dateInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    marginBottom: 20,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  modalButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 5,
+    marginHorizontal: 5,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#f0f0f0',
+  },
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+  },
+  cancelButtonText: {
+    color: '#333',
+    fontWeight: '500',
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontWeight: '500',
   },
 });
 

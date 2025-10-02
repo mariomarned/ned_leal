@@ -12,9 +12,9 @@ export const Fonts = {
 };
 
 export const FontSizes = {
-  h1: 32,
+  h1: 43,
   h2: 24,
-  h3: 18,
+  h3: 20,
   body: 16,
   small: 14,
 };
@@ -55,7 +55,11 @@ export const GlobalStyles = {
   },
   title: {
     fontFamily: Fonts.altoSans,
-    fontWeight: 'bold',
+    fontWeight: 'black',
+    lineHeight: 35,
+    textAlign: 'center',
+    marginBottom: Spacing.large,
+    fontSize: FontSizes.h1,
     color: Colors.black,
   },
   h1: {
@@ -74,6 +78,7 @@ export const GlobalStyles = {
     fontSize: FontSizes.h3,
     fontFamily: Fonts.altoSans,
     fontWeight: 'bold',
+    marginBottom: Spacing.medium,
     color: Colors.black,
   },
   bodyText: {

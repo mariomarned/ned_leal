@@ -71,7 +71,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '48%', // Adjust as needed for spacing
     marginBottom: 10,
-    boxShadow: '0px 1px 1.41px rgba(0, 0, 0, 0.20)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   businessName: {
     fontSize: 16,
@@ -88,7 +95,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '48%', // Adjust as needed for spacing
     marginBottom: 10,
-    boxShadow: '0px 1px 1.41px rgba(0, 0, 0, 0.20)',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   recommendationTitle: {
     fontSize: 16,
