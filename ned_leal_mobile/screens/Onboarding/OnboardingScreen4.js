@@ -61,7 +61,6 @@ const OnboardingScreen4 = () => {
 
                 {/* Button positioned at bottom right */}
                 <View style={styles.buttonContainer}>
-                    <Text style={[GlobalStyles.h3, { textAlign: 'center', marginBottom: 20 }]}>Y serán mas...</Text>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen5')}>
                         <Text style={styles.buttonText}>SIGUIENTE</Text>
                     </TouchableOpacity>
