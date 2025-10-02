@@ -28,12 +28,12 @@ const OnboardingScreen2 = () => {
                 <View style={styles.topYellowShape} />
 
                 <View style={styles.contentContainer}>
-                    <Text style={GlobalStyles.title}>Gana con cada dinámica y sin complique!</Text>
+                    <Text style={GlobalStyles.title}>Tus negocios preferidos!</Text>
                     <Text style={[GlobalStyles.h3, { textAlign: 'center' }]}>
-                        Nunca fue tan fácil ganar recompensas de los negocios, no mas formularios y procesos complicados.
+                        Negocios pequeños y grandes, todos pueden estar en NED y comenzar gratis.
                     </Text>
                     <Animated.Image 
-                        source={require('../../assets/images/Auth/welcome1_image.png')} 
+                        source={require('../../assets/images/Auth/negocios_preferidos.png')} 
                         style={[
                             styles.welcomeImage,
                             { 
@@ -61,7 +61,6 @@ const OnboardingScreen2 = () => {
 
                 {/* Button positioned at bottom right */}
                 <View style={styles.buttonContainer}>
-                    <Text style={[GlobalStyles.h3, { textAlign: 'center', marginBottom: 20 }]}>Y serán mas...</Text>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen3')}>
                         <Text style={styles.buttonText}>SIGUIENTE</Text>
                     </TouchableOpacity>
@@ -85,8 +84,8 @@ const styles = StyleSheet.create({
     topYellowShape: {
         position: 'absolute',
         top: 0,
-        left: 0,
-        width: width * 0.8,
+        right: 0,
+        width: width * 0.3,
         height: height * 0.3,
         backgroundColor: '#FFD700', // Yellow color
         borderBottomRightRadius: width * 0.4,
@@ -95,8 +94,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         left: 0,
-        width: width * 0.4,
-        height: height * 0.2,
+        width: width * 0.7,
+        height: height * 0.1,
         backgroundColor: '#FF69B4', // Pink color
         borderTopRightRadius: width * 0.2,
         opacity: 0.7,
@@ -122,7 +121,7 @@ const styles = StyleSheet.create({
     },
     welcomeImage: {
         width: '100%',
-        height: height * 0.4,
+        height: height * 0.5,
         resizeMode: 'contain',
         marginTop: height * 0.05,
     },

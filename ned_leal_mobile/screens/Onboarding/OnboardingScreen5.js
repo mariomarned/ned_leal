@@ -28,12 +28,17 @@ const OnboardingScreen5 = () => {
                 <View style={styles.topYellowShape} />
 
                 <View style={styles.contentContainer}>
-                    <Text style={GlobalStyles.title}>Gana con cada dinámica y sin complique!</Text>
+                    <Image
+                        source={require('../../assets/images/Auth/Logo_NED.png')}
+                        style={styles.logoNed}
+                    />
+                    <Text style={GlobalStyles.title}>DISFRUTA EL PODER DE LA LEALTAD</Text>
                     <Text style={[GlobalStyles.h3, { textAlign: 'center' }]}>
-                        Nunca fue tan fácil ganar recompensas de los negocios, no mas formularios y procesos complicados.
+                        ¿Cómo deseas ingresar?
                     </Text>
-                    <Animated.Image 
-                        source={require('../../assets/images/Auth/welcome1_image.png')} 
+                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 13 }}>
+                        <Animated.Image 
+                        source={require('../../assets/images/Auth/negocio.png')} 
                         style={[
                             styles.welcomeImage,
                             { 
@@ -54,18 +59,35 @@ const OnboardingScreen5 = () => {
                             }
                         ]}
                     />
-                </View>
+                        <Animated.Image 
+                            source={require('../../assets/images/Auth/consumidor.png')} 
+                            style={[
+                                styles.welcomeImage,
+                                { 
+                                    transform: [
+                                        {
+                                            scale: bounceAnim.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [0.5, 1] // Start smaller and bounce to normal size
+                                            })
+                                        },
+                                        {
+                                            translateY: bounceAnim.interpolate({
+                                                inputRange: [0, 1],
+                                                outputRange: [height * 0.2, 0] // Start 20% down and bounce up
+                                            })
+                                        }
+                                    ]
+                                }
+                            ]}
+                        />
+                    </View>
+                    </View>
 
                 {/* Bottom left pink shape */}
                 <View style={styles.bottomLeftPinkShape} />
 
-                {/* Button positioned at bottom right */}
-                <View style={styles.buttonContainer}>
-                    <Text style={[GlobalStyles.h3, { textAlign: 'center', marginBottom: 20 }]}>Y serán mas...</Text>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('OnboardingScreen5')}>
-                        <Text style={styles.buttonText}>SIGUIENTE</Text>
-                    </TouchableOpacity>
-                </View>
+
             </View>
         </SafeAreaView>
     );
@@ -85,11 +107,11 @@ const styles = StyleSheet.create({
     topYellowShape: {
         position: 'absolute',
         top: 0,
-        left: 0,
-        width: width * 0.8,
+        right: 0,
+        width: width * 0.3,
         height: height * 0.3,
         backgroundColor: '#FFD700', // Yellow color
-        borderBottomRightRadius: width * 0.4,
+        borderBottomLeftRadius: width * 0.4,
     },
     bottomLeftPinkShape: {
         position: 'absolute',
@@ -121,31 +143,17 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     welcomeImage: {
-        width: '100%',
-        height: height * 0.4,
+        width: '45%',
+        height: height * 0.2,
         resizeMode: 'contain',
         marginTop: height * 0.05,
     },
-    button: {
-        backgroundColor: '#C4227D', // Pink color
-        paddingVertical: 15,
-        paddingHorizontal: 40,
-        borderRadius: 30,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    buttonContainer: {
-        position: 'absolute',
-        bottom: 30,
-        right: 30,
+
+    logoNed: {
+        width: 250,
+        height: 250,
+        resizeMode: 'contain',
+        marginBottom: 20,
     },
 });
 
