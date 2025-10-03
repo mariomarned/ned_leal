@@ -5,6 +5,7 @@ import OnboardingScreen2 from './OnboardingScreen2';
 import OnboardingScreen3 from './OnboardingScreen3';
 import OnboardingScreen4 from './OnboardingScreen4';
 import OnboardingScreen5 from './OnboardingScreen5';
+import RegisterScreen1 from '../Auth/RegisterScreen1';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ const OnboardingNavigator = () => {
             <Stack.Screen name="OnboardingScreen3" component={OnboardingScreen3} />
             <Stack.Screen name="OnboardingScreen4" component={OnboardingScreen4} />
             <Stack.Screen name="OnboardingScreen5" component={OnboardingScreen5} />
+            <Stack.Screen name="RegisterScreen1" component={RegisterScreen1} />
         </Stack.Navigator>
     );
 };

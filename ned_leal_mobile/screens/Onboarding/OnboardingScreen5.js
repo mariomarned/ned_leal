@@ -36,7 +36,8 @@ const OnboardingScreen5 = () => {
                     <Text style={[GlobalStyles.h3, { textAlign: 'center' }]}>
                         ¿Cómo deseas ingresar?
                     </Text>
-                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 13 }}>
+                     <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 13, marginTop: height * 0.05 }}>
+                        <TouchableOpacity style={styles.touchableImageContainer} onPress={() => navigation.navigate('RegisterScreen1')}>
                         <Animated.Image 
                         source={require('../../assets/images/Auth/negocio.png')} 
                         style={[
@@ -59,6 +60,8 @@ const OnboardingScreen5 = () => {
                             }
                         ]}
                     />
+                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.touchableImageContainer} onPress={() => navigation.navigate('RegisterScreen1')}>
                         <Animated.Image 
                             source={require('../../assets/images/Auth/consumidor.png')} 
                             style={[
@@ -81,6 +84,7 @@ const OnboardingScreen5 = () => {
                                 }
                             ]}
                         />
+                        </TouchableOpacity>
                     </View>
                     </View>
 
@@ -143,10 +147,10 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     welcomeImage: {
-        width: '45%',
-        height: height * 0.2,
+        width: '100%',
+        height: '100%',
         resizeMode: 'contain',
-        marginTop: height * 0.05,
+        // marginTop: height * 0.05,
     },
 
     logoNed: {
@@ -154,6 +158,12 @@ const styles = StyleSheet.create({
         height: 250,
         resizeMode: 'contain',
         marginBottom: 20,
+    },
+    touchableImageContainer: {
+        width: width * 0.43,
+        height: height * 0.23,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
 
