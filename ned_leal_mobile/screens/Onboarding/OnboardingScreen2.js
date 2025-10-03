@@ -86,18 +86,18 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         width: width * 0.3,
-        height: height * 0.3,
+        height: width * 0.3,
         backgroundColor: '#FFD700', // Yellow color
-        borderBottomRightRadius: width * 0.4,
+        borderRadius: (width * 0.3) / 2,
     },
     bottomLeftPinkShape: {
         position: 'absolute',
         bottom: 0,
         left: 0,
-        width: width * 0.7,
-        height: height * 0.1,
+        width: width * 0.4,
+        height: width * 0.4,
         backgroundColor: '#FF69B4', // Pink color
-        borderTopRightRadius: width * 0.2,
+        borderRadius: (width * 0.4) / 2,
         opacity: 0.7,
     },
     contentContainer: {
